@@ -22,10 +22,10 @@ const Navbar = () => {
           {/* Buttons Section */}
           <div className="flex gap-4 items-center buttons">
             {user ? (
-              pathname !== "/profile" && (
-                <Link href="/profile">
+              pathname !== "/dashboard" && (
+                <Link href="/dashboard">
                   <strong style={{ marginRight: "4px" }}>{user.name}</strong>
-                  <button id="profile">Profile</button>
+                  <button id="dashboard">Dashboard</button>
                 </Link>
               )
             ) : (

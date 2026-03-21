@@ -1,7 +1,7 @@
 "use client";
 import { useAuth } from "@/Context/Context";
 
-// user profile page
+// user dashboard page
 
 const page = () => {
   const { user, loading } = useAuth();
@@ -12,7 +12,7 @@ const page = () => {
       </div>
     );
   }
-  return <div>Profile Page</div>;
+  return <div>Dashboard</div>;
 };
 
 export default page;
