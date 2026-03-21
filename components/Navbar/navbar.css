@@ -1,0 +1,35 @@
+.logo{
+  background-color: var(--color-background);
+  width: 60px;
+  height: 60px;
+}
+.navbar{
+  background-color:var(--color-background2);
+}
+.navbar span{
+  color: var(--color-text);
+  font-size: 28px;
+  font-weight: 300;
+}
+.navbar .buttons button{
+  background-color: var(--color-lightpink);
+  transition: var(--trans);
+  cursor: pointer;
+}
+.navbar .buttons button:last-child{
+  background-color: var(--color-lightgreen);
+}
+.navbar .buttons button:hover{
+  background: transparent;
+  color: var(--color-text)
+}
+#login{
+  background-color: var(--color-lightpink);
+}
+
+@media screen and (max-width:480px) {
+  .navbar span{
+    font-size: 18px;
+    font-weight: 400;
+  }
+}

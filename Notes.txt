@@ -1,0 +1,8 @@
+Error:Cannot find module or type declarations for side-effect import of './global.css'
+then it's solution
+Create a file name global.d.ts and add the following line
+declare module "*.css"
+Note: In global.d.ts  file other declarations can also be done
+
+When setting the cookie on browser the login code must include 
+credentials: "include",
