@@ -1,6 +1,7 @@
 // context.tsx
 "use client";
 
+import { useRouter } from "next/navigation";
 import { createContext, useContext, useEffect, useState } from "react";
 
 type User = {
@@ -23,7 +24,7 @@ const AuthContext = createContext<AuthContextType>({
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
-
+  const router = useRouter();
   useEffect(() => {
     const checkLogin = async () => {
       try {
@@ -34,12 +35,18 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             credentials: "include",
           },
         );
+
         if (res.ok) {
           const data = await res.json();
-          setUser(data.user);
+          if (data?.user) {
+            setUser(data.user);
+          } else {
+            setUser(null);
+          }
         }
       } catch (err) {
         console.error("Login check failed:", err);
+        setUser(null);
       } finally {
         setLoading(false);
       }

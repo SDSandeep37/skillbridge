@@ -5,10 +5,11 @@ import SignUp from "@/components/SignUp/SignUp";
 import { useAuth } from "@/Context/Context";
 const App = () => {
   const { user, loading } = useAuth();
+
   return (
     <div>
       <Banner />
-      {!user && (
+      {!loading && !user && (
         <>
           <SignUp />
           <Login />

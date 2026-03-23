@@ -24,7 +24,7 @@ const Navbar = () => {
             {user ? (
               pathname !== "/dashboard" && (
                 <Link href="/dashboard">
-                  <strong style={{ marginRight: "4px" }}>{user.name}</strong>
+                  {/* <strong style={{ marginRight: "4px" }}>{user.name}</strong> */}
                   <button id="dashboard">Dashboard</button>
                 </Link>
               )

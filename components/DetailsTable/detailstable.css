@@ -1,0 +1,49 @@
+.tableDiv {
+  overflow-x: auto;
+}
+.tableDiv table th {
+  padding: 10px 0px;
+}
+.tableDiv table tr td button {
+  cursor: pointer;
+}
+.tableDiv table tr td {
+  padding: 10px;
+}
+
+/* model */
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modalContent {
+  background: #1f2937;
+  padding: 20px;
+  border-radius: 8px;
+  width: 400px;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.modalContent input {
+  display: block;
+  width: 100%;
+  margin: 10px 0;
+  padding: 8px;
+}
+
+.modalActions {
+  display: flex;
+  justify-content: space-between;
+}
