@@ -6,3 +6,20 @@ Note: In global.d.ts  file other declarations can also be done
 
 When setting the cookie on browser the login code must include 
 credentials: "include",
+
+npm install @monaco-editor/react socket.io-client lodash.throttle
+here
+ @monaco-editor/react is A React wrapper for the Monaco Editor and it is also used in vs code
+ socket.io-client->A real-time communication library that connects your frontend to a Socket.io server.
+ lodash.throttle-> 
+What it is
+A utility function from the popular library:
+Lodash
+It limits how often a function runs 
+example if socket send each key press the in one Second their is multiple call 
+to server this issue resolved by this and it limits the function call 
+
+
+npm uninstall lodash.throttle
+npm install lodash
+npm install --save-dev @types/lodash

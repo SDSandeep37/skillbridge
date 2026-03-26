@@ -1,13 +1,13 @@
-import { usePathname } from "next/navigation";
+import Link from "next/link";
 import "./detailstable.css";
 import { SubmitEvent, useState } from "react";
+import { useRouter } from "next/navigation";
 
 interface tableDetailsType {
   data: any;
   tableFor: string;
 }
 const DetailsTable = ({ data, tableFor }: tableDetailsType) => {
-  const pathname = usePathname();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedStudent, setSelectedStudent] = useState<any>(null);
   const [userMessage, setUserMessage] = useState<string>("");
@@ -15,6 +15,7 @@ const DetailsTable = ({ data, tableFor }: tableDetailsType) => {
   const [sessionTopic, setSessionTopic] = useState<string>("");
   const [buttonText, setButtonText] = useState<string>("");
   const [processingId, setProcessingId] = useState<string | null>(null);
+  const router = useRouter();
   // handling the user message error or success
   const handleUserMessage = (message: string, messageType: string) => {
     setMessageType(messageType);
@@ -137,6 +138,7 @@ const DetailsTable = ({ data, tableFor }: tableDetailsType) => {
       setTimeout(() => {
         setProcessingId(null);
         setButtonText("Joined");
+        router.push(`/dashboard/editor/${id}`);
       }, 1000);
     } catch (error) {
       console.error("Error joining session", error);
@@ -266,15 +268,25 @@ const DetailsTable = ({ data, tableFor }: tableDetailsType) => {
                 </td>
                 <td>
                   {session.status === "active" && (
-                    <button
-                      onClick={() => handleSessionEnding(session.id)}
-                      className="bg-red-500  hover:bg-red-700"
-                      disabled={processingId === session.id}
-                    >
-                      {processingId === session.id
-                        ? "Processing.."
-                        : buttonText || "End Session"}
-                    </button>
+                    <>
+                      <button
+                        onClick={() => handleSessionEnding(session.id)}
+                        className="bg-red-500  hover:bg-red-700"
+                        disabled={processingId === session.id}
+                      >
+                        {processingId === session.id
+                          ? "Processing.."
+                          : buttonText || "End Session"}
+                      </button>
+                      <Link href={`/dashboard/editor/${session.id}`}>
+                        <button
+                          style={{ marginLeft: "4px" }}
+                          className="bg-green-500 hover:bg-green-900 text-white"
+                        >
+                          Join Session
+                        </button>
+                      </Link>
+                    </>
                   )}
                 </td>
               </tr>
