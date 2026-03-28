@@ -1,6 +1,6 @@
 import { Editor } from "@monaco-editor/react";
 import "./editor.css";
-import { useEffect, useRef, useState } from "react";
+import { use, useEffect, useRef, useState } from "react";
 import { socket } from "@/libarary/socket";
 import throttle from "lodash/throttle";
 import { useAuth } from "@/Context/Context";
@@ -54,6 +54,10 @@ const CodeEditor = ({ sessionId }: { sessionId: any }) => {
   const editorRef = useRef<any>(null);
   const decorationsRef = useRef<any[]>([]);
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
+  const localVideoRef = useRef<HTMLVideoElement | null>(null);
+  const remoteVideoRef = useRef<HTMLVideoElement | null>(null);
+  const peerConnection = useRef<RTCPeerConnection | null>(null);
+
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
@@ -161,6 +165,82 @@ const CodeEditor = ({ sessionId }: { sessionId: any }) => {
 
     setMessageInput("");
   };
+  // video call
+  useEffect(() => {
+    const startVideoCall = async () => {
+      const localStream = await navigator.mediaDevices.getUserMedia({
+        video: true,
+        audio: true,
+      });
+      if (localVideoRef.current) {
+        localVideoRef.current.srcObject = localStream;
+      }
+
+      peerConnection.current = new RTCPeerConnection({
+        iceServers: [{ urls: "stun:stun.l.google.com:19302" }],
+      });
+      localStream.getTracks().forEach((track) => {
+        peerConnection.current?.addTrack(track, localStream);
+      });
+
+      peerConnection.current.ontrack = (event) => {
+        if (remoteVideoRef.current) {
+          remoteVideoRef.current.srcObject = event.streams[0];
+        }
+      };
+      peerConnection.current.onicecandidate = (event) => {
+        if (event.candidate) {
+          socket.emit("ice-candidate", {
+            sessionId,
+            candidate: event.candidate,
+          });
+        }
+      };
+      socket.on("video-offer", async (data) => {
+        if (data.sessionId !== sessionId) return;
+        await peerConnection.current?.setRemoteDescription(
+          new RTCSessionDescription(data.offer),
+        );
+        const answer = await peerConnection.current?.createAnswer();
+        await peerConnection.current?.setLocalDescription(answer!);
+        socket.emit("video-answer", {
+          sessionId,
+          answer,
+        });
+      });
+      socket.on("video-answer", async (data) => {
+        if (data.sessionId !== sessionId) return;
+        await peerConnection.current?.setRemoteDescription(
+          new RTCSessionDescription(data.answer),
+        );
+      });
+      socket.on("ice-candidate", async (data) => {
+        if (data.sessionId !== sessionId) return;
+        try {
+          await peerConnection.current?.addIceCandidate(
+            new RTCIceCandidate(data.candidate),
+          );
+        } catch (e) {
+          console.error("Error adding received ice candidate", e);
+        }
+      });
+    };
+    startVideoCall();
+    return () => {
+      socket.off("video-offer");
+      socket.off("video-answer");
+      socket.off("ice-candidate");
+      peerConnection.current?.close();
+    };
+  }, [sessionId]);
+  const startCall = async () => {
+    const offer = await peerConnection.current?.createOffer();
+    await peerConnection.current?.setLocalDescription(offer!);
+    socket.emit("video-offer", {
+      sessionId,
+      offer,
+    });
+  };
   return (
     <AuthDashboard>
       <div className="one__on__one">
@@ -221,10 +301,14 @@ const CodeEditor = ({ sessionId }: { sessionId: any }) => {
             </div>
           </div>
           <div className="video__call">
-            Lorem ipsum dolor, sit amet consectetur adipisicing elit. Voluptatem
-            blanditiis obcaecati unde cupiditate dolorum aperiam tempora
-            dignissimos quaerat, animi aspernatur non maiores quos nihil vel
-            totam facere nam soluta earum?
+            <div className="video">
+              <video ref={localVideoRef} autoPlay muted playsInline />
+              <video ref={remoteVideoRef} autoPlay playsInline />
+            </div>
+
+            <button className="cursor-pointer" onClick={startCall}>
+              Start Call
+            </button>
           </div>
         </div>
       </div>

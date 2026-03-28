@@ -119,6 +119,21 @@
 .chatroom__send-options button {
   cursor: pointer;
 }
+.video__call {
+  display: flex;
+  gap: 20px;
+  flex-direction: column;
+}
+.video {
+  display: flex;
+  gap: 20px;
+  flex-direction: column;
+}
+.video video {
+  width: 100%;
+  max-width: 250px;
+  border-radius: 20px;
+}
 @media screen and (max-width: 1960px) {
   .editor__container {
     width: 600px;
