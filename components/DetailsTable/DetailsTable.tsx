@@ -332,6 +332,16 @@ const DetailsTable = ({ data, tableFor }: tableDetailsType) => {
                         : buttonText || "Join Session"}
                     </button>
                   )}
+                  {session.status === "active" && session.student_joined && (
+                    <Link href={`/dashboard/editor/${session.id}`}>
+                      <button
+                        style={{ marginLeft: "4px" }}
+                        className="bg-green-500 hover:bg-green-900 text-white"
+                      >
+                        Re-Join
+                      </button>
+                    </Link>
+                  )}
                 </td>
               </tr>
             ))}

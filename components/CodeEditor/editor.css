@@ -1,11 +1,23 @@
-.editor {
-  padding: 20px;
+.remote-cursor {
+  border-left: 3px solid red;
+  height: 18px;
+}
+.one__on__one {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+.editor__container {
+  padding-left: 20px;
   display: flex;
   flex-direction: column;
+  flex: 2;
+  width: 100%;
 }
-.editor h1 {
+.editor__container h1 {
   margin-bottom: 10px;
 }
+
 .editor__language {
   display: flex;
   gap: 20px;
@@ -17,6 +29,113 @@
   background-color: var(--color-background);
 }
 
+.chat__video-call {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  padding: 20px;
+  gap: 20px;
+}
+.chatroom {
+  display: flex;
+  flex-direction: column;
+}
+.chatroom__header {
+  background-color: var(--color-background2);
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+  padding: 10px;
+}
+.chatroom__header-heading {
+  text-align: center;
+  font-size: 18px;
+  font-weight: 400;
+}
+.chatroom__messagebox {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  height: 350px;
+  overflow: auto;
+  border: 2px dashed var(--color-background2);
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
+  scroll-behavior: smooth;
+}
+.chatroom__messagebox::-webkit-scrollbar {
+  width: 5px;
+}
+.chatroom__messagebox::-webkit-scrollbar-track {
+  background-color: var(--color-background2);
+}
+.chatroom__messagebox::-webkit-scrollbar-thumb {
+  background-color: var(--color-lightgreen);
+}
+.chatroom__message {
+  display: flex;
+  flex-direction: column;
+  width: 90%;
+  margin: 5px;
+  border-radius: 10px;
+  border-bottom-right-radius: 0;
+}
+.message__details {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+  padding: 10px;
+}
+.message__details p {
+  font-size: 12px;
+  text-decoration: underline rgb(68, 253, 68);
+}
+.message__details span {
+  font-size: 10px;
+  color: var(--color-lightpink);
+}
+.chatroom__message .message {
+  padding: 10px;
+  padding-top: 0px;
+  font-size: 14px;
+}
+
+.outgoing .message__details {
+  justify-content: end;
+}
+.outgoing .message {
+  text-align: end;
+}
+.chatroom__send-options {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  width: 100%;
+  background-color: var(--color-background2);
+}
+.chatroom__send-options input {
+  width: 80%;
+  padding: 10px 20px;
+}
+.chatroom__send-options button {
+  cursor: pointer;
+}
+@media screen and (max-width: 1960px) {
+  .editor__container {
+    width: 600px;
+  }
+}
+@media screen and (max-width: 960px) {
+  .one__on__one {
+    flex-direction: column;
+  }
+  .editor__container {
+    width: 98%;
+  }
+  .chatroom {
+    width: 80%;
+    margin: auto;
+  }
+}
 @media screen and (max-width: 540px) {
   .editor__language {
     flex-direction: column;
