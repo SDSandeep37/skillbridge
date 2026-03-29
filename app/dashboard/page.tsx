@@ -4,9 +4,15 @@
 import AuthDashboard from "@/components/AuthDashboard/AuthDashboard";
 import DashboardCard from "@/components/DashboardCard/DashboardCard";
 import { useAuth } from "@/Context/Context";
+import { useRouter } from "next/dist/client/components/navigation";
+import { useEffect } from "react";
 
 const page = () => {
   const { user, loading } = useAuth();
+  const router = useRouter();
+  useEffect(() => {
+    router.refresh();
+  }, [user, router]);
 
   return (
     <AuthDashboard>

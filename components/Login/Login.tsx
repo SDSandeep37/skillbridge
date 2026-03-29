@@ -56,6 +56,7 @@ const Login = () => {
       handleUserMessage("Login successful!", "success");
       console.log("Logged in user:", data);
       setTimeout(() => {
+        router.refresh();
         router.replace("/");
       }, 2000);
     } catch (error: any) {

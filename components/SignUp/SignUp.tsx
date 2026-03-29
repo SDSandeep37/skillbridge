@@ -67,7 +67,7 @@ const SignUp = () => {
       handleUserMessage("Signup successful!", "success");
       console.log("User created:", data);
       setTimeout(() => {
-        router.replace("/");
+        router.replace("/login");
       }, 2000);
     } catch (error: any) {
       handleUserMessage(`Error: ${error.message}`, "error");

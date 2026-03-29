@@ -5,6 +5,7 @@ import { socket } from "@/libarary/socket";
 import throttle from "lodash/throttle";
 import { useAuth } from "@/Context/Context";
 import AuthDashboard from "../AuthDashboard/AuthDashboard";
+import Link from "next/link";
 
 const CodeEditor = ({ sessionId }: { sessionId: any }) => {
   const [code, setCode] = useState("//start coding...");
@@ -58,13 +59,19 @@ const CodeEditor = ({ sessionId }: { sessionId: any }) => {
   const remoteVideoRef = useRef<HTMLVideoElement | null>(null);
   const peerConnection = useRef<RTCPeerConnection | null>(null);
   const iceCandidateQueue = useRef<RTCIceCandidate[]>([]);
+  const chatBoxRef = useRef<HTMLDivElement | null>(null);
 
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  };
   useEffect(() => {
-    scrollToBottom();
+    if (chatBoxRef.current) {
+      chatBoxRef.current.scrollTop = chatBoxRef.current.scrollHeight;
+    }
   }, [messages]);
+  // const scrollToBottom = () => {
+  //   messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  // };
+  // useEffect(() => {
+  //   scrollToBottom();
+  // }, [messages]);
 
   // throttle socket emit
   const sendChange = useRef(
@@ -291,6 +298,14 @@ const CodeEditor = ({ sessionId }: { sessionId: any }) => {
     <AuthDashboard>
       <div className="one__on__one">
         <div className="editor__container">
+          <Link href="/dashboard">
+            <button
+              style={{ marginTop: "10px" }}
+              className="text-left cursor-pointer bg-red-500 hover:bg-red-800"
+            >
+              Leave Session
+            </button>
+          </Link>
           <h1 className="text-center text-2xl text-white font-bold">
             Code editor
           </h1>
@@ -319,7 +334,7 @@ const CodeEditor = ({ sessionId }: { sessionId: any }) => {
             <div className="chatroom__header">
               <h1 className="chatroom__header-heading">Chat Box</h1>
             </div>
-            <div className="chatroom__messagebox">
+            <div className="chatroom__messagebox" ref={chatBoxRef}>
               {messages.map((msg, index) => (
                 <div
                   key={index}
@@ -352,7 +367,10 @@ const CodeEditor = ({ sessionId }: { sessionId: any }) => {
               <video ref={remoteVideoRef} autoPlay playsInline />
             </div>
 
-            <button className="cursor-pointer" onClick={startCall}>
+            <button
+              className="cursor-pointer bg-green-400 hover:bg-green-700"
+              onClick={startCall}
+            >
               Start Call
             </button>
           </div>
