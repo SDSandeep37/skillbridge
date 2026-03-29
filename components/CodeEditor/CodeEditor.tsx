@@ -1,6 +1,6 @@
 import { Editor } from "@monaco-editor/react";
 import "./editor.css";
-import { use, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { socket } from "@/libarary/socket";
 import throttle from "lodash/throttle";
 import { useAuth } from "@/Context/Context";
@@ -47,7 +47,7 @@ const CodeEditor = ({ sessionId }: { sessionId: any }) => {
       }
     }
     getCode();
-  }, []);
+  }, [sessionId]);
 
   // other user remote change , used to prevent infinte loop while typing in code editor
   const isRemoteChange = useRef(false);
@@ -57,6 +57,7 @@ const CodeEditor = ({ sessionId }: { sessionId: any }) => {
   const localVideoRef = useRef<HTMLVideoElement | null>(null);
   const remoteVideoRef = useRef<HTMLVideoElement | null>(null);
   const peerConnection = useRef<RTCPeerConnection | null>(null);
+  const iceCandidateQueue = useRef<RTCIceCandidate[]>([]);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -72,10 +73,14 @@ const CodeEditor = ({ sessionId }: { sessionId: any }) => {
     }, 1000),
   ).current;
 
-  const sendCursor = throttle((data) => {
-    socket.emit("cursor-move", data);
-  }, 300);
-
+  // const sendCursor = throttle((data) => {
+  //   socket.emit("cursor-move", data);
+  // }, 300);
+  const sendCursor = useRef(
+    throttle((data) => {
+      socket.emit("cursor-move", data);
+    }, 300),
+  ).current;
   useEffect(() => {
     socket.connect();
     socket.emit("join-session", sessionId);
@@ -196,30 +201,71 @@ const CodeEditor = ({ sessionId }: { sessionId: any }) => {
           });
         }
       };
+      // socket.on("video-offer", async (data) => {
+      //   if (data.sessionId !== sessionId) return;
+      //   await peerConnection.current?.setRemoteDescription(
+      //     new RTCSessionDescription(data.offer),
+      //   );
+      //   const answer = await peerConnection.current?.createAnswer();
+      //   await peerConnection.current?.setLocalDescription(answer!);
+      //   socket.emit("video-answer", {
+      //     sessionId,
+      //     answer,
+      //   });
+      // });
       socket.on("video-offer", async (data) => {
         if (data.sessionId !== sessionId) return;
+
         await peerConnection.current?.setRemoteDescription(
           new RTCSessionDescription(data.offer),
         );
+
+        // flush queued ICE candidates
+        for (const candidate of iceCandidateQueue.current) {
+          await peerConnection.current?.addIceCandidate(candidate);
+        }
+        iceCandidateQueue.current = [];
+
         const answer = await peerConnection.current?.createAnswer();
         await peerConnection.current?.setLocalDescription(answer!);
+
         socket.emit("video-answer", {
           sessionId,
           answer,
         });
       });
+      // socket.on("video-answer", async (data) => {
+      //   if (data.sessionId !== sessionId) return;
+      //   await peerConnection.current?.setRemoteDescription(
+      //     new RTCSessionDescription(data.answer),
+      //   );
+      // });
       socket.on("video-answer", async (data) => {
         if (data.sessionId !== sessionId) return;
+
         await peerConnection.current?.setRemoteDescription(
           new RTCSessionDescription(data.answer),
         );
+
+        // flush queued ICE candidates
+        for (const candidate of iceCandidateQueue.current) {
+          await peerConnection.current?.addIceCandidate(candidate);
+        }
+        iceCandidateQueue.current = [];
       });
       socket.on("ice-candidate", async (data) => {
         if (data.sessionId !== sessionId) return;
         try {
-          await peerConnection.current?.addIceCandidate(
-            new RTCIceCandidate(data.candidate),
-          );
+          // await peerConnection.current?.addIceCandidate(
+          //   new RTCIceCandidate(data.candidate),
+          // );
+          const candidate = new RTCIceCandidate(data.candidate);
+
+          if (peerConnection.current?.remoteDescription) {
+            await peerConnection.current.addIceCandidate(candidate);
+          } else {
+            iceCandidateQueue.current.push(candidate);
+          }
         } catch (e) {
           console.error("Error adding received ice candidate", e);
         }
@@ -283,7 +329,7 @@ const CodeEditor = ({ sessionId }: { sessionId: any }) => {
                 >
                   <div className="message__details">
                     <p>{msg.sender_id === user?.id ? "You" : msg.name}</p>
-                    <span>{msg.created_at}</span>
+                    <span>{new Date(msg.created_at).toLocaleTimeString()}</span>
                   </div>
 
                   <div className="message">{msg.message}</div>
