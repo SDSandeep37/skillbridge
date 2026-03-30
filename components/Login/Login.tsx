@@ -56,8 +56,7 @@ const Login = () => {
       handleUserMessage("Login successful!", "success");
       console.log("Logged in user:", data);
       setTimeout(() => {
-        router.refresh();
-        router.replace("/");
+        window.location.href = "/dashboard";
       }, 2000);
     } catch (error: any) {
       handleUserMessage(`Error: ${error.message}`, "error");

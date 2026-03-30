@@ -1,3 +1,4 @@
+import { use } from "react";
 import "./logout.css";
 import { FaSignOutAlt } from "react-icons/fa";
 
@@ -20,10 +21,7 @@ const Logout = () => {
   };
 
   return (
-    <button
-      onClick={handleLogout}
-      className="logout-button bg-red-400 hover:bg-red-500"
-    >
+    <button onClick={handleLogout} className="logout-button">
       <FaSignOutAlt size={18} />
     </button>
   );

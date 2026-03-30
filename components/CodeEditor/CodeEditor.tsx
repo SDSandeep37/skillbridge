@@ -313,6 +313,8 @@ const CodeEditor = ({ sessionId }: { sessionId: any }) => {
             <label>Select Language</label>
             <select onChange={(e) => setLanguage(e.target.value)}>
               <option value="javascript">JavaScript</option>
+              <option value="html">HTML</option>
+              <option value="css">CSS</option>
               <option value="python">Python</option>
               <option value="cpp">C++</option>
               <option value="java">Java</option>

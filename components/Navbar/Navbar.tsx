@@ -2,17 +2,13 @@
 import Link from "next/link";
 import "./navbar.css";
 import { useAuth } from "@/Context/Context";
-import { usePathname, useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { usePathname } from "next/navigation";
 import Logout from "../Logout/Logout";
 
 const Navbar = () => {
   const { user, loading } = useAuth();
   const pathname = usePathname();
-  const router = useRouter();
-  useEffect(() => {
-    router.refresh();
-  }, [user]);
+
   return (
     <nav className="sticky top-0 z-50 shadow-md navbar">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
